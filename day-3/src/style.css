@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --sans: 'Lato', system-ui, sans-serif;
+  --heading: 'Bebas Neue', sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5);
+    --social-bg: rgba(47, 48, 58, 0.5);
+    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  }
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+.circle {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-color: rgb(255, 255, 255);
+    /* mix-blend-mode: difference; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 99999999;
+    will-change: transform;
+    opacity: 0;
+}
+
+#loader {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.line {
+  width: calc(100vw / 6);
+  height: 100%;
+  background-color: #000000;
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.bar h3 {
+  margin: 0;
+  font-family: var(--heading);
+  color: #fff;
+  font-size: 6vw;
+  letter-spacing: 2px;
+}
+
+#main {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.info {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 1px;
+  z-index: 5;
+}
+
+.name {
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--heading);
+  font-size: 4vw;
+  color: var(--accent);
+  letter-spacing: 4px;
+  margin: 0;
+  z-index: 5;
+  overflow: hidden;
+  line-height: 0.85;
+}
+
+.heading {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.heading p {
+  font-family: var(--heading);
+  font-size: 8vw;
+  line-height: 0.85;
+  color: var(--text-h);
+  margin: 0;
+  overflow: hidden;
+}
+
+.avatar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  background-image: url('/public/Gemini_Generated_Image_65k9fz65k9fz65k9-removebg-preview.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  z-index: 6;
+}
+
+@media (max-width: 768px) {
+  .name {
+    font-size: 7vw;
+    top: 15%;
+  }
+
+  .heading p {
+    font-size: 12vw;
+  }
+
+  .avatar {
+    width: 320px;
+    height: 380px;
+  }
+
+  .info {
+    bottom: 20px;
+    left: 20px;
+    font-size: 0.8rem;
+  }
+}
