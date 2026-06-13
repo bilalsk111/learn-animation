@@ -1,0 +1,147 @@
+/* --- Global Variables & Reset --- */
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font: 18px/145% var(--sans);
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5);
+    --social-bg: rgba(47, 48, 58, 0.5);
+    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  }
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  width: 100%;
+  min-height: 100%;
+}
+
+/* --- Section 1: Play Control (Small Boxes) --- */
+.playcontrol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center; /* Keeps items spaced beautifully vertically */
+  width: 100%;             /* Avoid 100vw to prevent horizontal scrollbar bugs */
+  min-height: 100vh;       /* Gives ScrollTrigger room to breathe and pin */
+  gap: 2.5rem;
+  box-sizing: border-box;
+  padding: 40px 50px;
+  background: var(--bg); 
+}
+
+/* Scope box styles to .playcontrol */
+.playcontrol .box1, 
+.playcontrol .box2, 
+.playcontrol .box3 {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.playcontrol .box1 {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.playcontrol .box2 {
+  background: var(--social-bg);
+}
+
+.playcontrol .box3 {
+  background: var(--code-bg);
+}
+
+.playcontrol .box1:hover, 
+.playcontrol .box2:hover, 
+.playcontrol .box3:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent);
+}
+
+/* Controls Bar */
+.controls {
+  display: flex;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+  margin-top: 10px; /* Optional: adds buffer below your boxes */
+}
+
+/* --- Section 2: Secondary Area (Large Boxes) --- */
+.sec2 {
+  width: 100%;
+  min-height: 100vh;       /* Changed to 100vh for crisp full-screen transitions */
+  background-color: var(--accent); 
+  display: flex; 
+  align-items: center;     /* Centers the large blocks vertically */
+  justify-content: flex-start; 
+  gap: 30px;     
+  padding: 50px;
+  box-sizing: border-box;
+}
+
+/* Scope box styles to .sec2 */
+.sec2 .box1, 
+.sec2 .box2, 
+.sec2 .box3 {
+  width: 300px;
+  height: 300px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+/* Specific colors for sec2 boxes */
+.sec2 .box1 {
+  background: #9ca3af; 
+  border-color: transparent;
+}
+
+.sec2 .box2 {
+  background: var(--social-bg);
+  border-color: transparent;
+}
+
+.sec2 .box3 {
+  background: var(--code-bg);
+  border-color: transparent;
+}
