@@ -33,38 +33,34 @@ thumbsContainer.addEventListener("click", (e) => {
 
   if (!clicked.classList.contains("thumb")) return;
 
-  const hero = document.querySelector(".hero");
+  const hero =document.querySelector(".hero");
 
-  const state = Flip.getState([clicked, hero]);
+  const state = Flip.getState(clicked);
+  const state2 = Flip.getState(hero);
 
   // swap
-  document.querySelector(".imgs").appendChild(hero);
+  hero.parentNode.appendChild(clicked);
+  thumbsContainer.appendChild(hero);
 
-  document.querySelector(".imgshow").appendChild(clicked);
+  // swap classes
+  clicked.classList.replace(
+    "thumb",
+    "hero"
+  );
 
-  // class swap
-  clicked.classList.remove("thumb");
-  clicked.classList.add("hero");
+  hero.classList.replace(
+    "hero",
+    "thumb"
+  );
 
-  hero.classList.remove("hero");
-  hero.classList.add("thumb");
-
-  // animate
   Flip.from(state, {
-    duration: 1,
+    duration: 0.9,
 
-    ease: "power2.inOut",
+    ease: "power3.inOut",
+  });
+  Flip.from(state2, {
+    duration: 0.9,
 
-    absolute: true,
-
-    nested: true,
-
-    scale: true,
-
-    onComplete: () => {
-      gsap.set([clicked, hero], {
-        clearProps: "transform,width,height",
-      });
-    },
+    ease: "power3.inOut",
   });
 });
