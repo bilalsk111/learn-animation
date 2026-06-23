@@ -2,15 +2,21 @@
 import gsap from "@/libs/gsap";
 import TextReveal from "./TextReveal";
 import { useRef } from "react";
-// import useViewTransition from "@/hooks/useViewTransition";
+import useViewTransition from "@/hook/useViewTransition";
 
 const CARD_W = 280;
 const CARD_H = 420;
-const SCALE = 1.35;
+const SCALE = 1.25; 
+
+// UI/UX LUXURY MATHEMATICS
+const EXPANDED_WIDTH = CARD_W * SCALE; // 350px
+const SHIFT_X = -((EXPANDED_WIDTH - CARD_W) / 2); // -35px centering shift
+const SHIFT_Y = -50; // Perfect breathing gap after top edge expansion
 
 const CarouselCard = ({ project, onHoverStart, onHoverEnd }) => {
-  const cardRef = useRef(null);      // Flex layout ko stable rakhne ke liye fixed outer container
-  const containerRef = useRef(null); // Smoothly scale hone wala inner container
+  const cardRef = useRef(null);
+  const innerContainerRef = useRef(null); 
+  const textPanelRef = useRef(null); 
   const imgRef = useRef(null);
   const yearRef = useRef(null);
   const numberRef = useRef(null);
@@ -19,65 +25,88 @@ const CarouselCard = ({ project, onHoverStart, onHoverEnd }) => {
   const onEnter = () => {
     onHoverStart?.();
 
-    // Hover karte hi card ko sabse upar layer par lao
-    gsap.set(cardRef.current, { zIndex: 10 });
+    // 1. Elevate layer priority instantly
+    gsap.set(cardRef.current, { zIndex: 50 });
 
-    // Inner container ko smooth bada karo
-    gsap.to(containerRef.current, {
-      width: CARD_W * SCALE,
-      height: CARD_H * SCALE,
-      duration: 0.4,
+    // 2. Smooth Image Container Expansion
+    gsap.to(innerContainerRef.current, {
+      scale: SCALE,
+      duration: 0.5,
       ease: "power3.out",
+      overwrite: "auto",
     });
 
-    // Image scale duration ko container ke sath perfectly sync kiya (No popping!)
+    // 3. Parallax Inner Image Effect
     gsap.to(imgRef.current, {
       scale: 1,
-      duration: 0.4,
+      duration: 0.52,
       ease: "power3.out",
+      overwrite: "auto",
+    });
+
+    // 4. FIX: Dynamic width and placement matching the expanded card edges perfectly
+    gsap.to(textPanelRef.current, {
+      width: EXPANDED_WIDTH,
+      x: SHIFT_X,
+      y: SHIFT_Y, 
+      duration: 0.5,
+      ease: "power3.out",
+      overwrite: "auto",
     });
 
     numberRef.current?.play();
     titleRef.current?.play();
-    yearRef.current?.play(); 
+    yearRef.current?.play();
   };
 
   const onLeave = () => {
     onHoverEnd?.();
 
-    // Inner container ko wapas smoothly normal size par lao
-    gsap.to(containerRef.current, {
-      width: CARD_W,
-      height: CARD_H,
-      duration: 0.3,
+    // 1. Reset Card Scale
+    gsap.to(innerContainerRef.current, {
+      scale: 1,
+      duration: 0.35,
       ease: "power3.out",
+      overwrite: "auto",
       onComplete: () => {
-        // Animation poori hone ke baad zIndex reset karo taaki overlapping glitch na ho
         gsap.set(cardRef.current, { zIndex: 1 });
       }
     });
 
-    // Image shrink duration bhi completely synced hai
+    // 2. Reset Image Zoom
     gsap.to(imgRef.current, {
       scale: 1.6,
-      duration: 0.3,
+      duration: 0.35,
       ease: "power3.out",
+      overwrite: "auto",
+    });
+
+    // 3. Reset Text Panel Width and Coordinates smoothly
+    gsap.to(textPanelRef.current, {
+      width: CARD_W,
+      x: 0,
+      y: 0,
+      duration: 0.35,
+      ease: "power3.out",
+      overwrite: "auto",
     });
 
     numberRef.current?.reverse();
     titleRef.current?.reverse();
-    yearRef.current?.reverse(); 
+    yearRef.current?.reverse();
   };
 
-//   const { navigateTo } = useViewTransition();
-
-//   const handleClick = () => {
-//     navigateTo(`/project/${project.slug}`);
-//   };
+  const { navigateTo } = useViewTransition();
+  const handleClick = () => {
+    if (project.slug) {
+      navigateTo(`/project/${project.slug}`);
+    }
+  };
 
   return (
     <div
       ref={cardRef}
+      onClick={handleClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       style={{
@@ -86,68 +115,68 @@ const CarouselCard = ({ project, onHoverStart, onHoverEnd }) => {
         flexShrink: 0,
         overflow: "visible",
         cursor: "pointer",
-        zIndex: 1,
         position: "relative",
+        zIndex: 1,
       }}
       className="flex items-center justify-center"
     >
-      {/* INNER CONTAINER: Ye center se smoothly expand hota hai bina track ko hilaye */}
+      {/* TITLE PANEL: Handles real-time width recalculation flawlessly */}
       <div
-        ref={containerRef}
+        ref={textPanelRef}
         style={{
-          width: CARD_W,
-          height: CARD_H,
           position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
+          bottom: "calc(100% + 0.6rem)", 
+          width: CARD_W, // Initial base width matching the card
+          left: 0,
         }}
-        className="bg-zinc-900 overflow-visible rounded-md shadow-2xl"
+        className="pointer-events-none flex flex-col gap-1 overflow-visible will-change-transform"
       >
-        {/* TITLE PANEL */}
-        <div
-          style={{ 
-            bottom: "calc(100% + 1.2rem)", 
-            width: "100%", 
-          }}
-          className="absolute left-0 pointer-events-none flex flex-col gap-2 overflow-visible will-change-transform"
-        >
-          {/* Number */}
-          <div className="flex overflow-visible">
-            <TextReveal
-              ref={numberRef}
-              trigger="manual"
-              splitBy="chars"
-              className="text-[1.2rem] font-mono font-medium text-amber-500 tracking-wider block"
-            >
-              {project.number ? String(project.number) : ""}
-            </TextReveal>
-          </div>
-
-          {/* Title & Year Row */}
-          <div className="flex justify-between items-end w-full whitespace-nowrap gap-4 overflow-visible">
-            <TextReveal
-              ref={titleRef}
-              trigger="manual"
-              splitBy="words"
-              className="text-white text-[1.4rem] font-medium tracking-wide block"
-            >
-              {project.title || ""}
-            </TextReveal>
-
-            <TextReveal
-              ref={yearRef}
-              trigger="manual"
-              splitBy="words"
-              className="text-white/60 text-sm font-light pb-0.5 block"
-            >
-              {project.year ? String(project.year) : ""}
-            </TextReveal>
-          </div>
+        {/* Number Wrapper */}
+        <div className="flex overflow-visible -mb-2 leading-none">
+          <TextReveal
+            ref={numberRef}
+            trigger="manual"
+            splitBy="chars"
+            className="text-[1.2rem] font-mono font-medium text-[#f07026] tracking-tighter block leading-[1.2]"
+          >
+            {project.number ? String(project.number) : ""}
+          </TextReveal>
         </div>
 
+        {/* Title & Year Row */}
+        <div className="flex justify-between items-end w-full whitespace-nowrap gap-4 overflow-visible leading-none">
+          <TextReveal
+            ref={titleRef}
+            trigger="manual"
+            splitBy="words"
+            className="text-white text-[1.4rem] font-medium tracking-tighter block leading-none"
+          >
+            {project.title || ""}
+          </TextReveal>
+
+          <TextReveal
+            ref={yearRef}
+            trigger="manual"
+            splitBy="words"
+            className="text-white/60 text-sm font-light block leading-[1.3]"
+          >
+            {project.year ? String(project.year) : ""}
+          </TextReveal>
+        </div>
+      </div>
+
+      {/* INNER CONTAINER */}
+      <div
+        ref={innerContainerRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          transformOrigin: "center center",
+        }}
+        className="absolute inset-0 bg-zinc-900 shadow-2xl flex items-center justify-center will-change-transform"
+      >
         {/* Image Div */}
-        <div className="imageDiv absolute h-full w-full overflow-hidden rounded-md">
+        <div className="imageDiv absolute h-full w-full overflow-hidden pointer-events-none">
           <img
             ref={imgRef}
             style={{ transformOrigin: "center center", userSelect: "none" }}

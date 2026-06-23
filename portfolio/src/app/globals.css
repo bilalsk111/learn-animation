@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
-* {
-  color: #f2f2f2;
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
+
 body {
+  color: #f2f2f2;
   background: #111111;  
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

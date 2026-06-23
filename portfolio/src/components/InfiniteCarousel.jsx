@@ -5,10 +5,11 @@ import gsap from "@/libs/gsap";
 
 const CARD_W = 280;
 const CARD_H = 420;
-const SCALE = 1.35;
-const CARD_GAP = 25;
+const SCALE = 1.25; 
 
-const DURATION = 10;
+const CARD_GAP = 45;
+
+const DURATION = 15; // Thoda uniform spacing duration build kiya h loop smooth karne ke liye
 const TRACK_H = CARD_H * SCALE;
 
 const InfiniteCarousel = ({ projects }) => {
@@ -16,27 +17,32 @@ const InfiniteCarousel = ({ projects }) => {
   const tweenRef = useRef(null);
 
   useEffect(() => {
-    // Pure mathematical loop width base formula
     const singleWidth = projects.length * (CARD_W + CARD_GAP);
 
     tweenRef.current = gsap.to(trackRef.current, {
+      x: -singleWidth,
+      duration: DURATION,
       repeat: -1,
       ease: "none",
-      duration: DURATION,
-      x: -singleWidth,
     });
 
     return () => tweenRef.current?.kill();
   }, [projects]);
 
-  const doubled = [...projects, ...projects];
+  // Infinite jumping visual break khatam karne ke liye simple multiplier loop
+  const doubled = [...projects, ...projects, ...projects, ...projects];
 
-  return (
+return (
     <div
       style={{
-        padding: `${TRACK_H * 0.2}px 0 40px`,
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        // Pehle 20vh tha, ab 8vh kiya hai taaki carousel screen ke aur neeche (bottom ke paas) shift ho jaye
+        paddingBottom: "10vh", 
       }}
-      className="overflow-hidden w-full rotate-2"
+      className="overflow-hidden w-full select-none"
     >
       <div
         ref={trackRef}
@@ -45,7 +51,7 @@ const InfiniteCarousel = ({ projects }) => {
           width: "max-content",
           height: `${TRACK_H}px`,
         }}
-        className="track flex items-center"
+        className="track flex items-center will-change-transform"
       >
         {doubled.map((project, i) => (
           <CarouselCard
